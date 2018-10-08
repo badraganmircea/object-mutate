@@ -1,0 +1,25 @@
+{
+  "name": "object-mutate",
+  "version": "0.1.0",
+  "description": "helper functions to modify javascript objects",
+  "main": "objectUtils.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/badraganmircea/object-mutate.git"
+  },
+  "keywords": [
+    "javascript",
+    "helper",
+    "functions",
+    "objects"
+  ],
+  "author": "Badragan Mircea",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/badraganmircea/object-mutate/issues"
+  },
+  "homepage": "https://github.com/badraganmircea/object-mutate#readme"
+}
