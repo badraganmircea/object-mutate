@@ -176,3 +176,214 @@ describe('find root objectS suite', () => {
     ]);
   })
 });
+
+describe('addToKey suite', () => {
+  it('adds key to simple object (absolute path)', () => {
+    const object = {
+      a: {
+        b: 'c'
+      }
+    }
+    object.addToKey('a', {
+      d: 'e'
+    }, {
+      isPathAbsolute: true
+    });
+
+    expect(object).toEqual({
+      a: {
+        b: 'c',
+        d: 'e'
+      }
+    });
+  });
+
+  it('overrides existing keys (absolute path)', () => {
+    const object = {
+      a: {
+        b: {
+          d: 'g'
+        }
+      }
+    }
+    object.addToKey('a.b', {
+      d: 'e'
+    }, {
+      isPathAbsolute: true
+    });
+
+    expect(object).toEqual({
+      a: {
+        b: {
+          d: 'e'
+        }
+      }
+    });
+  });
+
+  it('adds key to simple object (relative to one object found)', () => {
+    const object = {
+      a: {
+        b: {
+          d: 'g'
+        },
+        f: {
+          c: 'c'
+        }
+      }
+    }
+
+    object.addToKey('', {
+      x: 'e'
+    }, {
+      matchProperties: {
+        d: 'g'
+      }
+    });
+
+    expect(object).toEqual({
+      a: {
+        b: {
+          d: 'g',
+          x: 'e'
+        },
+        f: {
+          c: 'c'
+        }
+      }
+    })
+  });
+
+  it('adds key to all object (relative to one object found and no arrays)', () => {
+    const object = {
+      a: {
+        b: {
+          d: 'g',
+          t: 't',
+        },
+        f: {
+          c: 'c',
+          f: 'f',
+          d: 'g',
+        }
+      }
+    }
+
+    object.addToKey('', {
+      x: 'e'
+    }, {
+      matchProperties: {
+        d: 'g'
+      }
+    });
+
+    expect(object).toEqual({
+      a: {
+        b: {
+          d: 'g',
+          t: 't',
+          x: 'e'
+        },
+        f: {
+          c: 'c',
+          f: 'f',
+          d: 'g',
+          x: 'e'
+        }
+      }
+    });
+  });
+
+  it(' adds keys to an object inside an array', () => {
+    const object = {
+      a: {
+        b: {
+          d: 'g',
+          t: 't',
+        },
+        f: [{
+          c: 'c',
+          f: 'f',
+          d: 'g',
+        }]
+      }
+    }
+
+    object.addToKey('', {
+      x: {
+        y: 'y'
+      }
+    }, {
+      matchProperties: {
+        d: 'g'
+      }
+    });
+
+    expect(object).toEqual({
+      a: {
+        b: {
+          d: 'g',
+          t: 't',
+          x: {
+            y: 'y'
+          }
+        },
+        f: [{
+          c: 'c',
+          f: 'f',
+          d: 'g',
+          x: {
+            y: 'y'
+          }
+        }]
+      }
+    });
+  });
+
+  it('injects object to relative path inside found object by settings', () => {
+    const object = {
+      a: {
+        b: {
+          t: 't',
+        },
+        f: [{
+          c: 'c',
+          f: 'f',
+          d: 'g',
+          x: {
+            j: 'j'
+          }
+        }]
+      }
+    }
+
+    object.addToKey('x', {
+      o: {
+        y: 'y'
+      }
+    }, {
+      matchProperties: {
+        d: 'g'
+      }
+    });
+
+    expect(object).toEqual({
+      a: {
+        b: {
+          t: 't'
+        },
+        f: [{
+          c: 'c',
+          f: 'f',
+          d: 'g',
+          x: {
+            j: 'j',
+            o: {
+              y: 'y'
+            }
+          }
+        }]
+      }
+    });
+  });
+});

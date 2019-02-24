@@ -55,12 +55,29 @@ Object.prototype.findRootObjectByProperties = function(properties) {
   return foundObjects;
 };
 
-Object.prototype.addToKey = function(destinationPath, object) {
-  const destinationObj = getObj(destinationPath, this);
-  const destinationKey = Object.keys(object)[0];
-  destinationObj[destinationKey] = {
-    ...object[destinationKey]
-  };
+Object.prototype.addToKey = function(destinationPath, object, findSettings = {}) {
+  const {
+    isPathAbsolute,
+    matchProperties
+  } = findSettings;
+
+  let destinationObj;
+  if (isPathAbsolute) {
+    destinationObj = this.findRootObjectByPath(destinationPath);
+    const objectKeys = Object.keys(object);
+    objectKeys.forEach(key => {
+      destinationObj[key] = object[key];
+    })
+    return;
+  }
+  if (matchProperties) {
+    const destinationObjs = this.findRootObjectByProperties(matchProperties);
+    destinationObjs.forEach(destinationObj => {
+      destinationObj.addToKey(destinationPath, object, {
+        isPathAbsolute: true
+      });
+    });
+  }
 };
 
 Object.prototype.deleteKey = function(sourcePath) {
