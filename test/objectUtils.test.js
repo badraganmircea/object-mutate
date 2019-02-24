@@ -387,3 +387,182 @@ describe('addToKey suite', () => {
     });
   });
 });
+
+describe('create key suite', () => {
+  it('creates simple key to simple object', () => {
+    const object = {
+      a: 'b'
+    }
+
+    object.createKey('t', 'f');
+
+    expect(object).toEqual({
+      a: 'b',
+      t: 'f'
+    });
+  });
+
+  it('creates key to deeper path', () => {
+    const object = {
+      a: 'b',
+      c: {
+        e: 12,
+        d: {
+          f: 14
+        }
+      }
+    };
+
+    object.createKey('c.d.g', 17);
+
+    expect(object).toEqual({
+      a: 'b',
+      c: {
+        e: 12,
+        d: {
+          f: 14,
+          g: 17
+        }
+      }
+    });
+  })
+
+  it('creates a key with an object', () => {
+    const object = {
+      a: 'sd'
+    }
+
+    object.createKey('h', {
+      i: 'd'
+    })
+
+    expect(object).toEqual({
+      a: 'sd',
+      h: {
+        i: 'd'
+      }
+    });
+  });
+});
+
+describe('copy keys suite', () => {
+  it('copies simple key', () => {
+    const object = {
+      a: 'smt'
+    }
+
+    object.copyFromKey('a', 'b');
+
+    expect(object).toEqual({
+      a: 'smt',
+      b: 'smt'
+    })
+  });
+
+  it('copies from complex path', () => {
+    const object = {
+      a: {
+        b: {
+          d: 'smt'
+        }
+      }
+    }
+
+    object.copyFromKey('a.b.d', 'a.c');
+
+    expect(object).toEqual({
+      a: {
+        b: {
+          d: 'smt'
+        },
+        c: 'smt'
+      }
+    })
+  });
+
+  it('copies from found object with matched properties', () => {
+    const object = {
+      a: {
+        ref: {
+          b: 'c',
+          d: {
+            h: 'f'
+          }
+        }
+      }
+    }
+
+    object.copyFromKey('d', 'x', {
+      matchProperties: {
+        b: 'c'
+      }
+    });
+
+    expect(object).toEqual({
+      a: {
+        ref: {
+          b: 'c',
+          d: {
+            h: 'f'
+          },
+          x: {
+            h: 'f'
+          }
+        }
+      }
+    })
+  });
+
+  it('copies from all found objects including those in arrays', () => {
+    const object = {
+      a: {
+        ref: {
+          b: 'c',
+          h: 12,
+          d: {
+            h: 'f'
+          }
+        },
+        ref2: [{
+            b: 'c',
+            h: 12
+          },
+          {
+            h: 12
+          }
+        ]
+      }
+    }
+
+    object.copyFromKey('d', 'o', {
+      matchProperties: {
+        b: 'c',
+        h: 12
+      }
+    })
+
+    expect(object).toEqual({
+      a: {
+        ref: {
+          b: 'c',
+          h: 12,
+          d: {
+            h: 'f'
+          },
+          o: {
+            h: 'f'
+          }
+        },
+        ref2: [{
+            b: 'c',
+            h: 12,
+            o: undefined
+          },
+          {
+            h: 12
+          }
+        ]
+      }
+    })
+  });
+});

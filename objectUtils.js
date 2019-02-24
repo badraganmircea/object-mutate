@@ -79,6 +79,38 @@ Object.prototype.addToKey = function(destinationPath, object, findSettings = {})
   }
 };
 
+Object.prototype.createKey = function(destinationPath, value) {
+  const indexOfName = destinationPath.lastIndexOf('.');
+
+  if (indexOfName > -1) {
+    const name = destinationPath.substring(indexOfName + 1, destinationPath.length);
+    const path = destinationPath.substring(0, indexOfName);
+
+    const obj = this.findRootObjectByPath(path);
+    obj[name] = value;
+
+    return;
+  }
+
+  this[destinationPath] = value;
+}
+
+Object.prototype.copyFromKey = function(sourcePath, destinationPath, findSettings = {}) {
+  const {
+    matchProperties
+  } = findSettings;
+
+  if (!matchProperties) {
+    this.createKey(destinationPath, this.findRootObjectByPath(sourcePath));
+    return;
+  }
+
+  const referenceObjects = this.findRootObjectByProperties(matchProperties);
+  referenceObjects.forEach(refObject => {
+    refObject.copyFromKey(sourcePath, destinationPath);
+  });
+};
+
 Object.prototype.deleteKey = function(sourcePath) {
   const sourceKey = getSourceKey(sourcePath);
   const sourcePathList = sourcePath.split('.');
