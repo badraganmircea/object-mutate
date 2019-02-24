@@ -57,12 +57,11 @@ Object.prototype.findRootObjectByProperties = function(properties) {
 
 Object.prototype.addToKey = function(destinationPath, object, findSettings = {}) {
   const {
-    isPathAbsolute,
     matchProperties
   } = findSettings;
 
   let destinationObj;
-  if (isPathAbsolute) {
+  if (!matchProperties) {
     destinationObj = this.findRootObjectByPath(destinationPath);
     const objectKeys = Object.keys(object);
     objectKeys.forEach(key => {
