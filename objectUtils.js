@@ -38,8 +38,8 @@ Object.prototype.findRootObjectByProperties = function(properties) {
     const objKeys = Object.keys(obj);
     objKeys.forEach(property => {
       if (obj.hasOwnProperty(property)) {
-        if (property === oldKey) {
-          obj.renameKey(oldKey, newKey);
+        if (obj[property].doesObjectMatchByProperties(properties)) {
+          foundObjects.push(obj[property]);
         }
         if (typeof obj[property] === "object") {
           iterate(obj[property]);
@@ -49,6 +49,7 @@ Object.prototype.findRootObjectByProperties = function(properties) {
   };
 
   iterate(this);
+  return foundObjects;
 };
 
 Object.prototype.addToKey = function(destinationPath, object) {
