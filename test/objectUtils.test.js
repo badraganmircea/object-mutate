@@ -1,6 +1,17 @@
 import '../objectUtils';
 
 describe('find root object suite', () => {
+  it('inserts object at root', () => {
+    const object = {
+      a: {
+        b: 'c'
+      },
+      e: [1, 2, 3]
+    }
+
+    expect(object.findRootObjectByPath('')).toBe(object);
+  });
+
   it('finds object pointer at path', () => {
     const object = {
       a: {

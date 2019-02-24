@@ -2,6 +2,9 @@ const getObj = (path, obj) => path.split('.').reduce((res, key) => res[key], obj
 const getSourceKey = (sourcePath) => sourcePath.split('.')[sourcePath.split('.').length - 1];
 
 Object.prototype.findRootObjectByPath = function(path) {
+  if (path.trim() === '') {
+    return this;
+  }
   try {
     return getObj(path, this);
   } catch (e) {}
