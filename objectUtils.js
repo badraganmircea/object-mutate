@@ -7,6 +7,50 @@ Object.prototype.findRootObjectByPath = function(path) {
   } catch (e) {}
 };
 
+Object.prototype.doesObjectMatchByProperties = function(propertiesToMatch) {
+  const propertiesKeys = Object.keys(propertiesToMatch);
+  let match = true;
+
+  propertiesKeys.forEach(property => {
+    if (
+      !this.hasOwnProperty(property) ||
+      typeof this[property] != typeof propertiesToMatch[property]
+    ) {
+      match = false;
+      return;
+    }
+
+    if (
+      (typeof this[property] == 'string' || typeof this[property] == 'number') &&
+      this[property] !== propertiesToMatch[property]
+    ) {
+      match = false;
+    }
+  });
+
+  return match;
+}
+
+Object.prototype.findRootObjectByProperties = function(properties) {
+  const foundObjects = [];
+
+  const iterate = (obj) => {
+    const objKeys = Object.keys(obj);
+    objKeys.forEach(property => {
+      if (obj.hasOwnProperty(property)) {
+        if (property === oldKey) {
+          obj.renameKey(oldKey, newKey);
+        }
+        if (typeof obj[property] === "object") {
+          iterate(obj[property]);
+        }
+      }
+    });
+  };
+
+  iterate(this);
+};
+
 Object.prototype.addToKey = function(destinationPath, object) {
   const destinationObj = getObj(destinationPath, this);
   const destinationKey = Object.keys(object)[0];

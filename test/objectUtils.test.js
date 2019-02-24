@@ -47,3 +47,34 @@ describe('find root object suite', () => {
     expect(insideObject.findRootObjectByPath('f')).toBe(insideObject.f);
   });
 });
+
+describe('object match by properties', () => {
+  it('compares if 2 objects match with same values', () => {
+    const properties = {
+      a: {},
+      b: 'c',
+      d: {}
+    }
+    const obj = {
+      a: {},
+      b: 'c',
+      d: {},
+      f: []
+    }
+    expect(obj.doesObjectMatchByProperties(properties)).toEqual(true);
+  });
+
+  it('compares if 2 objects match with different values', () => {
+    const properties = {
+      a: 'value1',
+      b: 'value2'
+    };
+    const obj = {
+      a: [
+        'value1'
+      ],
+      b: 'value2'
+    }
+    expect(obj.doesObjectMatchByProperties(properties)).toEqual(false);
+  });
+});
