@@ -9,15 +9,9 @@ describe('find root object suite', () => {
       e: [1, 2, 3]
     }
 
-    expect(object.findRootObject({
-      path: 'a.b'
-    })).toBe(object.a.b);
-    expect(object.findRootObject({
-      path: 'a'
-    })).toBe(object.a);
-    expect(object.findRootObject({
-      path: 'e'
-    })).toBe(object.e);
+    expect(object.findRootObjectByPath('a.b')).toBe(object.a.b);
+    expect(object.findRootObjectByPath('a')).toBe(object.a);
+    expect(object.findRootObjectByPath('e')).toBe(object.e);
   });
 
   it('doesn\'t find object pointer if not existent', () => {
@@ -31,15 +25,9 @@ describe('find root object suite', () => {
       g: {}
     }
 
-    expect(object.findRootObject({
-      path: 'a.b.d'
-    })).toBe(undefined);
-    expect(object.findRootObject({
-      path: 'a.e'
-    })).toBe(undefined);
-    expect(object.findRootObject({
-      path: 'a.c.d'
-    })).toBe(undefined);
+    expect(object.findRootObjectByPath('a.b.d')).toBe(undefined);
+    expect(object.findRootObjectByPath('a.e')).toBe(undefined);
+    expect(object.findRootObjectByPath('a.c.d')).toBe(undefined);
   });
 
   it('finds correct object inside another object', () => {
@@ -54,14 +42,8 @@ describe('find root object suite', () => {
         h: {}
       }
     }
-    const insideObject = object.findRootObject({
-      path: 'a.d'
-    });
-    expect(insideObject.findRootObject({
-      path: 'f'
-    })).toBe(object.a.d.f);
-    expect(insideObject.findRootObject({
-      path: 'f'
-    })).toBe(insideObject.f);
+    const insideObject = object.findRootObjectByPath('a.d');
+    expect(insideObject.findRootObjectByPath('f')).toBe(object.a.d.f);
+    expect(insideObject.findRootObjectByPath('f')).toBe(insideObject.f);
   });
 });
