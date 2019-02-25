@@ -62,11 +62,17 @@ Object.prototype.addToKey = function(destinationPath, object, findSettings = {})
 
   let destinationObj;
   if (!matchProperties) {
-    destinationObj = this.findRootObjectByPath(destinationPath);
-    const objectKeys = Object.keys(object);
-    objectKeys.forEach(key => {
-      destinationObj[key] = object[key];
-    })
+    if (typeof object == 'object') {
+      destinationObj = this.findRootObjectByPath(destinationPath);
+      const objectKeys = Object.keys(object);
+
+      objectKeys.forEach(key => {
+        destinationObj[key] = object[key];
+      });
+    } else {
+      this.createKey(destinationPath, object);
+    }
+
     return;
   }
   if (matchProperties) {

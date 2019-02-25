@@ -178,6 +178,51 @@ describe('find root objectS suite', () => {
 });
 
 describe('addToKey suite', () => {
+  it('adds a string as value to the key', () => {
+    const object = {
+      a: {
+        d: '12'
+      }
+    };
+
+    object.addToKey('a.r', '12');
+
+    expect(object).toEqual({
+      a: {
+        d: '12',
+        r: '12'
+      }
+    })
+  });
+
+  it('adds number as a key', () => {
+    const object = {
+      a: {
+        d: '12',
+        b: {
+          d: '12'
+        }
+      }
+    };
+
+    object.addToKey('x', 12, {
+      matchProperties: {
+        d: '12'
+      }
+    })
+
+    expect(object).toEqual({
+      a: {
+        d: '12',
+        x: 12,
+        b: {
+          d: '12',
+          x: 12
+        }
+      }
+    })
+  });
+
   it('adds key to simple object (absolute path)', () => {
     const object = {
       a: {
