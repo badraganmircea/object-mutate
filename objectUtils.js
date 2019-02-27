@@ -75,14 +75,13 @@ Object.prototype.addToKey = function(destinationPath, object, findSettings = {})
 
     return;
   }
-  if (matchProperties) {
-    const destinationObjs = this.findRootObjectByProperties(matchProperties);
-    destinationObjs.forEach(destinationObj => {
-      destinationObj.addToKey(destinationPath, object, {
-        isPathAbsolute: true
-      });
+
+  const destinationObjs = this.findRootObjectByProperties(matchProperties);
+  destinationObjs.forEach(destinationObj => {
+    destinationObj.addToKey(destinationPath, object, {
+      isPathAbsolute: true
     });
-  }
+  });
 };
 
 Object.prototype.createKey = function(destinationPath, value) {
@@ -93,6 +92,9 @@ Object.prototype.createKey = function(destinationPath, value) {
     const path = destinationPath.substring(0, indexOfName);
 
     const obj = this.findRootObjectByPath(path);
+
+    if (!obj) return;
+
     obj[name] = value;
 
     return;

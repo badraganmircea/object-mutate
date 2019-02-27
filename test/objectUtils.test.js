@@ -1,6 +1,14 @@
 import '../objectUtils';
 
 describe('find root object suite', () => {
+  it('returns undefined if no object is found', () => {
+    const object = {
+      a: 'd'
+    }
+
+    expect(object.findRootObjectByPath('f')).toBe(undefined);
+  });
+
   it('inserts object at root', () => {
     const object = {
       a: {
@@ -59,7 +67,7 @@ describe('find root object suite', () => {
   });
 });
 
-describe('object match by properties', () => {
+describe('does object match by properties', () => {
   it('compares if 2 objects match with same values', () => {
     const properties = {
       a: {},
@@ -90,7 +98,18 @@ describe('object match by properties', () => {
   });
 });
 
-describe('find root objectS suite', () => {
+describe('find root objectS by properties suite', () => {
+  it('returns undefined if no object is found', () => {
+    const properties = {
+      a: 'c'
+    }
+    const obj = {
+      d: 'd'
+    }
+
+    expect(obj.findRootObjectByProperties(properties)).toEqual([]);
+  });
+
   it('finds single object', () => {
     const obj = {
       a: {
@@ -178,6 +197,34 @@ describe('find root objectS suite', () => {
 });
 
 describe('addToKey suite', () => {
+  it('doesn\'t modify the object is key is not existent', () => {
+    const object = {
+      a: {
+        b: 'c'
+      }
+    }
+
+    object.addToKey('d.r', 124);
+
+    expect(object).toEqual(object);
+  });
+
+  it('doesn\'t modify the object is key is not existent (by matched properties)', () => {
+    const object = {
+      a: {
+        b: 'c'
+      }
+    }
+
+    object.addToKey('d.r', 124, {
+      matchProperties: {
+        d: 4
+      }
+    });
+
+    expect(object).toEqual(object);
+  });
+
   it('adds a string as value to the key', () => {
     const object = {
       a: {
@@ -434,6 +481,22 @@ describe('addToKey suite', () => {
 });
 
 describe('create key suite', () => {
+  it('does not modify the object if path is not correct', () => {
+    const object = {
+      a: 'b',
+      c: {
+        e: 12,
+        d: {
+          f: 14
+        }
+      }
+    };
+
+    object.createKey('c.x.x', 17);
+
+    expect(object).toEqual(object);
+  });
+
   it('creates simple key to simple object', () => {
     const object = {
       a: 'b'
@@ -491,6 +554,18 @@ describe('create key suite', () => {
 });
 
 describe('copy keys suite', () => {
+  it('does not modify the object if the destination path is not correct', () => {
+    const object = {
+      a: 'smt'
+    }
+
+    object.copyFromKey('d.g', 'b');
+
+    expect(object).toEqual({
+      a: 'smt'
+    })
+  });
+
   it('copies simple key', () => {
     const object = {
       a: 'smt'
