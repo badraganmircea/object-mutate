@@ -23,27 +23,28 @@ Object.prototype.doesObjectMatchByProperties = function(propertiesToMatch) {
       return;
     }
 
-    if (
-      (typeof this[property] == 'string' || typeof this[property] == 'number') &&
-      this[property] !== propertiesToMatch[property]
-    ) {
+    if (typeof this[property] == 'string' && this[property].localeCompare(propertiesToMatch[property])) {
+      match = false;
+      return;
+    }
+
+    if (typeof this[property] == 'number' && this[property] !== propertiesToMatch[property]) {
       match = false;
     }
   });
-
   return match;
 }
 
 Object.prototype.findRootObjectByProperties = function(properties) {
-  const foundObjects = [];
+  const foundObjects = new Set();
 
   const iterate = (obj) => {
     const objKeys = Object.keys(obj);
     objKeys.forEach(property => {
+      if (obj.doesObjectMatchByProperties(properties)) {
+        foundObjects.add(obj);
+      }
       if (obj.hasOwnProperty(property)) {
-        if (obj[property].doesObjectMatchByProperties(properties)) {
-          foundObjects.push(obj[property]);
-        }
         if (typeof obj[property] === "object") {
           iterate(obj[property]);
         }
@@ -52,7 +53,7 @@ Object.prototype.findRootObjectByProperties = function(properties) {
   };
 
   iterate(this);
-  return foundObjects;
+  return Array.from(foundObjects);
 };
 
 Object.prototype.addToKey = function(destinationPath, object, findSettings = {}) {
