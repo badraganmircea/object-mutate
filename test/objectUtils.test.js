@@ -1,4 +1,4 @@
-import '../objectUtils';
+require('../objectUtils') ;
 
 describe('find root object suite', () => {
   it('returns undefined if no object is found', () => {
@@ -197,6 +197,31 @@ describe('find root objectS by properties suite', () => {
 });
 
 describe('addToKey suite', () => {
+  it('adds the key correctly', () => {
+      const object = {
+        "type": "workflowEngine",
+        "smt": "smt",
+        "configuration": {
+            "dasmdasmda": "lkasdlkas"
+        }
+      }
+
+      object.addToKey('configuration',{props: {'adad': 'adada'}} , {
+        matchProperties: {
+          "type": "workflowEngine",
+          "smt": "smt",
+        }
+      });
+      expect(object).toEqual({
+        "type": "workflowEngine",
+        "smt": "smt",
+        "configuration": {
+          "props": {'adad': 'adada'},
+          "dasmdasmda": "lkasdlkas"
+        }
+      })
+  });
+
   it('doesn\'t modify the object is key is not existent', () => {
     const object = {
       a: {

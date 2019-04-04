@@ -78,10 +78,9 @@ Object.prototype.addToKey = function(destinationPath, object, findSettings = {})
   }
 
   const destinationObjs = this.findRootObjectByProperties(matchProperties);
+
   destinationObjs.forEach(destinationObj => {
-    destinationObj.addToKey(destinationPath, object, {
-      isPathAbsolute: true
-    });
+    destinationObj.addToKey(destinationPath, object);
   });
 };
 
