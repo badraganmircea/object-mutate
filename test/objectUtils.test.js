@@ -134,7 +134,7 @@ describe('find root objectS by properties suite', () => {
   })
 
   it('finds object even if in array', () => {
-    const obj = {
+    const obj = new Mutate({
       a: {
         b: {
           c: 'some value'
@@ -146,7 +146,7 @@ describe('find root objectS by properties suite', () => {
           }]
         }
       }
-    };
+    });
 
     const properties = {
       f: 'g',
@@ -154,12 +154,12 @@ describe('find root objectS by properties suite', () => {
     }
 
     expect(obj.findRootObjectByProperties(properties)).toEqual([
-      obj.a.d.e[0]
+      obj.value().a.d.e[0]
     ]);
   });
 
   it('finds all objects with properties', () => {
-    const obj = {
+    const obj = new Mutate({
       a: {
         b: {
           c: 'some value',
@@ -184,7 +184,7 @@ describe('find root objectS by properties suite', () => {
           ]
         }
       }
-    };
+    });
 
     const properties = {
       f: 'g',
@@ -192,20 +192,20 @@ describe('find root objectS by properties suite', () => {
     }
 
     expect(obj.findRootObjectByProperties(properties)).toEqual([
-      obj.a.b, obj.a.d.e[0], obj.a.i.j[1]
+      obj.value().a.b, obj.value().a.d.e[0], obj.value().a.i.j[1]
     ]);
   })
 });
 
 describe('addToKey suite', () => {
   it('adds the key correctly', () => {
-      const object = {
+      const object = new Mutate({
         "type": "workflowEngine",
         "smt": "smt",
         "configuration": {
             "dasmdasmda": "lkasdlkas"
         }
-      }
+      });
 
       object.addToKey('configuration',{props: {'adad': 'adada'}} , {
         matchProperties: {
@@ -213,7 +213,7 @@ describe('addToKey suite', () => {
           "smt": "smt",
         }
       });
-      expect(object).toEqual({
+      expect(object.value()).toEqual({
         "type": "workflowEngine",
         "smt": "smt",
         "configuration": {
@@ -224,11 +224,11 @@ describe('addToKey suite', () => {
   });
 
   it('doesn\'t modify the object is key is not existent', () => {
-    const object = {
+    const object = new Mutate({
       a: {
         b: 'c'
       }
-    }
+    });
 
     object.addToKey('d.r', 124);
 

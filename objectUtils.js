@@ -85,7 +85,7 @@ Mutate.prototype.addToKey = function(destinationPath, object, findSettings = {})
     return;
   }
 
-  const destinationObjs = this.findRootObjectByProperties(matchProperties);
+  const destinationObjs = this.findRootObjectByProperties(matchProperties).map(obj => new Mutate(obj));
 
   destinationObjs.forEach(destinationObj => {
     destinationObj.addToKey(destinationPath, object);
