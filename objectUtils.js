@@ -1,47 +1,55 @@
 const getObj = (path, obj) => path.split('.').reduce((res, key) => res[key], obj);
 const getSourceKey = (sourcePath) => sourcePath.split('.')[sourcePath.split('.').length - 1];
 
-Object.prototype.findRootObjectByPath = function(path) {
+function Mutate(mutateObj) {
+  this.mutateObj = mutateObj;
+}
+
+Mutate.prototype.value = function() {
+  return this.mutateObj;
+}
+
+Mutate.prototype.findRootObjectByPath = function(path) {
   if (path.trim() === '') {
-    return this;
+    return this.mutateObj;
   }
   try {
-    return getObj(path, this);
+    return getObj(path, this.mutateObj);
   } catch (e) {}
 };
 
-Object.prototype.doesObjectMatchByProperties = function(propertiesToMatch) {
+Mutate.prototype.doesObjectMatchByProperties = function(propertiesToMatch) {
   const propertiesKeys = Object.keys(propertiesToMatch);
   let match = true;
 
   propertiesKeys.forEach(property => {
     if (
-      !this.hasOwnProperty(property) ||
-      typeof this[property] != typeof propertiesToMatch[property]
+      !this.value().hasOwnProperty(property) ||
+      typeof this.value()[property] != typeof propertiesToMatch[property]
     ) {
       match = false;
       return;
     }
 
-    if (typeof this[property] == 'string' && this[property].localeCompare(propertiesToMatch[property])) {
+    if (typeof this.value()[property] == 'string' && this.value()[property].localeCompare(propertiesToMatch[property])) {
       match = false;
       return;
     }
 
-    if (typeof this[property] == 'number' && this[property] !== propertiesToMatch[property]) {
+    if (typeof this.value()[property] == 'number' && this.value()[property] !== propertiesToMatch[property]) {
       match = false;
     }
   });
   return match;
 }
 
-Object.prototype.findRootObjectByProperties = function(properties) {
+Mutate.prototype.findRootObjectByProperties = function(properties) {
   const foundObjects = new Set();
 
   const iterate = (obj) => {
     const objKeys = Object.keys(obj);
     objKeys.forEach(property => {
-      if (obj.doesObjectMatchByProperties(properties)) {
+      if (new Mutate(obj).doesObjectMatchByProperties(properties)) {
         foundObjects.add(obj);
       }
       if (obj.hasOwnProperty(property)) {
@@ -52,11 +60,11 @@ Object.prototype.findRootObjectByProperties = function(properties) {
     });
   };
 
-  iterate(this);
+  iterate(this.value());
   return Array.from(foundObjects);
 };
 
-Object.prototype.addToKey = function(destinationPath, object, findSettings = {}) {
+Mutate.prototype.addToKey = function(destinationPath, object, findSettings = {}) {
   const {
     matchProperties
   } = findSettings;
@@ -84,7 +92,7 @@ Object.prototype.addToKey = function(destinationPath, object, findSettings = {})
   });
 };
 
-Object.prototype.createKey = function(destinationPath, value) {
+Mutate.prototype.createKey = function(destinationPath, value) {
   const indexOfName = destinationPath.lastIndexOf('.');
 
   if (indexOfName > -1) {
@@ -103,7 +111,7 @@ Object.prototype.createKey = function(destinationPath, value) {
   this[destinationPath] = value;
 }
 
-Object.prototype.copyFromKey = function(sourcePath, destinationPath, findSettings = {}) {
+Mutate.prototype.copyFromKey = function(sourcePath, destinationPath, findSettings = {}) {
   const {
     matchProperties
   } = findSettings;
@@ -119,7 +127,7 @@ Object.prototype.copyFromKey = function(sourcePath, destinationPath, findSetting
   });
 };
 
-Object.prototype.deleteKey = function(sourcePath) {
+Mutate.prototype.deleteKey = function(sourcePath) {
   const sourceKey = getSourceKey(sourcePath);
   const sourcePathList = sourcePath.split('.');
   sourcePathList.splice(-1, 1);
@@ -128,7 +136,7 @@ Object.prototype.deleteKey = function(sourcePath) {
   delete sourceObject[sourceKey];
 };
 
-Object.prototype.moveKey = function(sourcePath, destinationPath) {
+Mutate.prototype.moveKey = function(sourcePath, destinationPath) {
   const source = getObj(sourcePath, this);
   const destination = getObj(destinationPath, this);
 
