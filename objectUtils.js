@@ -85,10 +85,38 @@ Mutate.prototype.addToKey = function(destinationPath, object, findSettings = {})
     return;
   }
 
-  const destinationObjs = this.findRootObjectByProperties(matchProperties).map(obj => new Mutate(obj));
+  const destinationObjs = this.findRootObjectByProperties(matchProperties);
 
   destinationObjs.forEach(destinationObj => {
-    destinationObj.addToKey(destinationPath, object);
+
+    const indexOfName = destinationPath.lastIndexOf('.');
+    let name;
+    if (indexOfName > -1) {
+      name = destinationPath.substring(indexOfName + 1, destinationPath.length);
+      destinationObj[name] = object;
+    } else {
+      name = destinationPath;
+    }
+
+    if (name.trim() === '') {
+      const objectKeys = Object.keys(object);
+      objectKeys.forEach(key => {
+        destinationObj[key] = object[key];
+      });
+
+      return;
+    }
+
+    if (typeof object == 'object') {
+      const objectKeys = Object.keys(object);
+      objectKeys.forEach(key => {
+        destinationObj[name][key] = object[key];
+      });
+
+      return;
+    }
+
+    destinationObj[destinationPath] = object;
   });
 };
 
@@ -99,7 +127,7 @@ Mutate.prototype.createKey = function(destinationPath, value) {
     const name = destinationPath.substring(indexOfName + 1, destinationPath.length);
     const path = destinationPath.substring(0, indexOfName);
 
-    const obj = this.findRootObjectByPath(path);
+    const obj = getObj(path, this.value());
 
     if (!obj) return;
 
@@ -108,7 +136,7 @@ Mutate.prototype.createKey = function(destinationPath, value) {
     return;
   }
 
-  this[destinationPath] = value;
+  this.value()[destinationPath] = value;
 }
 
 Mutate.prototype.copyFromKey = function(sourcePath, destinationPath, findSettings = {}) {

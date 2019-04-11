@@ -236,11 +236,11 @@ describe('addToKey suite', () => {
   });
 
   it('doesn\'t modify the object is key is not existent (by matched properties)', () => {
-    const object = {
+    const object = new Mutate({
       a: {
         b: 'c'
       }
-    }
+    });
 
     object.addToKey('d.r', 124, {
       matchProperties: {
@@ -252,15 +252,15 @@ describe('addToKey suite', () => {
   });
 
   it('adds a string as value to the key', () => {
-    const object = {
+    const object = new Mutate({
       a: {
         d: '12'
       }
-    };
+    });
 
     object.addToKey('a.r', '12');
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: {
         d: '12',
         r: '12'
@@ -268,15 +268,15 @@ describe('addToKey suite', () => {
     })
   });
 
-  it('adds number as a key', () => {
-    const object = {
+  it('adds number to a key', () => {
+    const object = new Mutate({
       a: {
         d: '12',
         b: {
           d: '12'
         }
       }
-    };
+    });
 
     object.addToKey('x', 12, {
       matchProperties: {
@@ -284,7 +284,7 @@ describe('addToKey suite', () => {
       }
     })
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: {
         d: '12',
         x: 12,
@@ -297,18 +297,19 @@ describe('addToKey suite', () => {
   });
 
   it('adds key to simple object (absolute path)', () => {
-    const object = {
+    const object = new Mutate({
       a: {
         b: 'c'
       }
-    }
+    });
+
     object.addToKey('a', {
       d: 'e'
     }, {
       isPathAbsolute: true
     });
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: {
         b: 'c',
         d: 'e'
@@ -317,20 +318,21 @@ describe('addToKey suite', () => {
   });
 
   it('overrides existing keys (absolute path)', () => {
-    const object = {
+    const object = new Mutate({
       a: {
         b: {
           d: 'g'
         }
       }
-    }
+    });
+
     object.addToKey('a.b', {
       d: 'e'
     }, {
       isPathAbsolute: true
     });
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: {
         b: {
           d: 'e'
@@ -340,7 +342,7 @@ describe('addToKey suite', () => {
   });
 
   it('adds key to simple object (relative to one object found)', () => {
-    const object = {
+    const object = new Mutate({
       a: {
         b: {
           d: 'g'
@@ -349,7 +351,7 @@ describe('addToKey suite', () => {
           c: 'c'
         }
       }
-    }
+    });
 
     object.addToKey('', {
       x: 'e'
@@ -359,7 +361,7 @@ describe('addToKey suite', () => {
       }
     });
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: {
         b: {
           d: 'g',
@@ -373,7 +375,7 @@ describe('addToKey suite', () => {
   });
 
   it('adds key to all object (relative to one object found and no arrays)', () => {
-    const object = {
+    const object = new Mutate({
       a: {
         b: {
           d: 'g',
@@ -385,7 +387,7 @@ describe('addToKey suite', () => {
           d: 'g',
         }
       }
-    }
+    });
 
     object.addToKey('', {
       x: 'e'
@@ -395,7 +397,7 @@ describe('addToKey suite', () => {
       }
     });
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: {
         b: {
           d: 'g',
@@ -412,8 +414,8 @@ describe('addToKey suite', () => {
     });
   });
 
-  it(' adds keys to an object inside an array', () => {
-    const object = {
+  it('adds keys to an object inside an array', () => {
+    const object = new Mutate({
       a: {
         b: {
           d: 'g',
@@ -425,7 +427,7 @@ describe('addToKey suite', () => {
           d: 'g',
         }]
       }
-    }
+    });
 
     object.addToKey('', {
       x: {
@@ -437,7 +439,7 @@ describe('addToKey suite', () => {
       }
     });
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: {
         b: {
           d: 'g',
@@ -459,7 +461,7 @@ describe('addToKey suite', () => {
   });
 
   it('injects object to relative path inside found object by settings', () => {
-    const object = {
+    const object = new Mutate({
       a: {
         b: {
           t: 't',
@@ -473,7 +475,7 @@ describe('addToKey suite', () => {
           }
         }]
       }
-    }
+    });
 
     object.addToKey('x', {
       o: {
@@ -485,7 +487,7 @@ describe('addToKey suite', () => {
       }
     });
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: {
         b: {
           t: 't'
@@ -508,7 +510,7 @@ describe('addToKey suite', () => {
 
 describe('create key suite', () => {
   it('does not modify the object if path is not correct', () => {
-    const object = {
+    const object = new Mutate({
       a: 'b',
       c: {
         e: 12,
@@ -516,7 +518,7 @@ describe('create key suite', () => {
           f: 14
         }
       }
-    };
+    });
 
     object.createKey('c.x.x', 17);
 
@@ -524,20 +526,20 @@ describe('create key suite', () => {
   });
 
   it('creates simple key to simple object', () => {
-    const object = {
+    const object = new Mutate({
       a: 'b'
-    }
+    });
 
     object.createKey('t', 'f');
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: 'b',
       t: 'f'
     });
   });
 
   it('creates key to deeper path', () => {
-    const object = {
+    const object = new Mutate({
       a: 'b',
       c: {
         e: 12,
@@ -545,11 +547,11 @@ describe('create key suite', () => {
           f: 14
         }
       }
-    };
+    });
 
     object.createKey('c.d.g', 17);
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: 'b',
       c: {
         e: 12,
@@ -562,15 +564,15 @@ describe('create key suite', () => {
   })
 
   it('creates a key with an object', () => {
-    const object = {
+    const object = new Mutate({
       a: 'sd'
-    }
+    });
 
     object.createKey('h', {
       i: 'd'
     })
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: 'sd',
       h: {
         i: 'd'
