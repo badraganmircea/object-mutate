@@ -146,18 +146,20 @@ Mutate.prototype.moveKey = function(sourcePath, destinationPath) {
   this.deleteKey(sourcePath);
 };
 
-Object.prototype.renameKey = function(oldKey, newKey) {
+
+// TODO: won't work
+Mutate.prototype.renameKey = function(oldKey, newKey) {
   if (oldKey === newKey) {
-    return this;
+    return this.mutateObj;
   }
   if (this.hasOwnProperty(oldKey)) {
-    this[newKey] = this[oldKey];
+    this.mutateObj[newKey] = this.mutateObj[oldKey];
     delete this[oldKey];
   }
-  return this;
+  return this.mutateObj;
 };
 
-Object.prototype.renameKeys = function(oldKey, newKey) {
+Mutate.prototype.renameKeys = function(oldKey, newKey) {
   if (oldKey === newKey) {
     return this;
   }
@@ -176,5 +178,9 @@ Object.prototype.renameKeys = function(oldKey, newKey) {
     });
   };
 
-  iterate(this);
+  iterate(this.mutateObj);
 };
+
+module.exports = {
+  Mutate
+}
