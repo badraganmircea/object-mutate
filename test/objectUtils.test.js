@@ -1,40 +1,39 @@
-require('../objectUtils') ;
+const Mutate = require('../objectUtils').Mutate ;
 
 describe('find root object suite', () => {
   it('returns undefined if no object is found', () => {
-    const object = {
+    const object = new Mutate({
       a: 'd'
-    }
-
+    });
     expect(object.findRootObjectByPath('f')).toBe(undefined);
   });
 
   it('inserts object at root', () => {
-    const object = {
+    const object = new Mutate({
       a: {
         b: 'c'
       },
       e: [1, 2, 3]
-    }
+    })
 
-    expect(object.findRootObjectByPath('')).toBe(object);
+    expect(object.findRootObjectByPath('')).toBe(object.value());
   });
 
   it('finds object pointer at path', () => {
-    const object = {
+    const object = new Mutate({
       a: {
         b: 'c'
       },
       e: [1, 2, 3]
-    }
+    });
 
-    expect(object.findRootObjectByPath('a.b')).toBe(object.a.b);
-    expect(object.findRootObjectByPath('a')).toBe(object.a);
-    expect(object.findRootObjectByPath('e')).toBe(object.e);
+    expect(object.findRootObjectByPath('a.b')).toBe(object.value().a.b);
+    expect(object.findRootObjectByPath('a')).toBe(object.value().a);
+    expect(object.findRootObjectByPath('e')).toBe(object.value().e);
   });
 
   it('doesn\'t find object pointer if not existent', () => {
-    const object = {
+    const object = new Mutate({
       a: {
         b: 'c',
         d: {
@@ -42,7 +41,7 @@ describe('find root object suite', () => {
         }
       },
       g: {}
-    }
+    });
 
     expect(object.findRootObjectByPath('a.b.d')).toBe(undefined);
     expect(object.findRootObjectByPath('a.e')).toBe(undefined);
@@ -50,7 +49,7 @@ describe('find root object suite', () => {
   });
 
   it('finds correct object inside another object', () => {
-    const object = {
+    const object = new Mutate({
       a: {
         b: 'c',
         d: {
@@ -60,10 +59,11 @@ describe('find root object suite', () => {
       g: {
         h: {}
       }
-    }
-    const insideObject = object.findRootObjectByPath('a.d');
-    expect(insideObject.findRootObjectByPath('f')).toBe(object.a.d.f);
-    expect(insideObject.findRootObjectByPath('f')).toBe(insideObject.f);
+    });
+
+    const insideObject = new Mutate(object.findRootObjectByPath('a.d'));
+    expect(insideObject.findRootObjectByPath('f')).toBe(object.value().a.d.f);
+    expect(insideObject.findRootObjectByPath('f')).toBe(insideObject.value().f);
   });
 });
 
@@ -74,12 +74,13 @@ describe('does object match by properties', () => {
       b: 'c',
       d: {}
     }
-    const obj = {
+    const obj = new Mutate({
       a: {},
       b: 'c',
       d: {},
       f: []
-    }
+    });
+
     expect(obj.doesObjectMatchByProperties(properties)).toEqual(true);
   });
 
@@ -88,12 +89,12 @@ describe('does object match by properties', () => {
       a: 'value1',
       b: 'value2'
     };
-    const obj = {
+    const obj = new Mutate({
       a: [
         'value1'
       ],
       b: 'value2'
-    }
+    });
     expect(obj.doesObjectMatchByProperties(properties)).toEqual(false);
   });
 });
@@ -103,15 +104,15 @@ describe('find root objectS by properties suite', () => {
     const properties = {
       a: 'c'
     }
-    const obj = {
+    const obj = new Mutate({
       d: 'd'
-    }
+    });
 
     expect(obj.findRootObjectByProperties(properties)).toEqual([]);
   });
 
   it('finds single object', () => {
-    const obj = {
+    const obj = new Mutate({
       a: {
         b: {
           c: 'some value'
@@ -123,13 +124,13 @@ describe('find root objectS by properties suite', () => {
           }]
         }
       }
-    };
+    });
 
     const properties = {
       c: 'some value'
     }
 
-    expect(obj.findRootObjectByProperties(properties)).toEqual([obj.a.b]);
+    expect(obj.findRootObjectByProperties(properties)).toEqual([obj.value().a.b]);
   })
 
   it('finds object even if in array', () => {
