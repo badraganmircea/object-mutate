@@ -174,41 +174,6 @@ Mutate.prototype.moveKey = function(sourcePath, destinationPath) {
   this.deleteKey(sourcePath);
 };
 
-
-// TODO: won't work
-Mutate.prototype.renameKey = function(oldKey, newKey) {
-  if (oldKey === newKey) {
-    return this.mutateObj;
-  }
-  if (this.hasOwnProperty(oldKey)) {
-    this.mutateObj[newKey] = this.mutateObj[oldKey];
-    delete this[oldKey];
-  }
-  return this.mutateObj;
-};
-
-Mutate.prototype.renameKeys = function(oldKey, newKey) {
-  if (oldKey === newKey) {
-    return this;
-  }
-
-  const iterate = (obj) => {
-    const objKeys = Object.keys(obj);
-    objKeys.forEach(property => {
-      if (obj.hasOwnProperty(property)) {
-        if (property === oldKey) {
-          obj.renameKey(oldKey, newKey);
-        }
-        if (typeof obj[property] === "object") {
-          iterate(obj[property]);
-        }
-      }
-    });
-  };
-
-  iterate(this.mutateObj);
-};
-
 module.exports = {
   Mutate
 }
