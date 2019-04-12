@@ -1,4 +1,4 @@
-const Mutate = require('../objectUtils').Mutate ;
+const Mutate = require('../objectUtils').Mutate;
 
 describe('find root object suite', () => {
   it('returns undefined if no object is found', () => {
@@ -199,28 +199,34 @@ describe('find root objectS by properties suite', () => {
 
 describe('addToKey suite', () => {
   it('adds the key correctly', () => {
-      const object = new Mutate({
-        "type": "workflowEngine",
-        "smt": "smt",
-        "configuration": {
-            "dasmdasmda": "lkasdlkas"
-        }
-      });
+    const object = new Mutate({
+      "type": "workflowEngine",
+      "smt": "smt",
+      "configuration": {
+        "dasmdasmda": "lkasdlkas"
+      }
+    });
 
-      object.addToKey('configuration',{props: {'adad': 'adada'}} , {
-        matchProperties: {
-          "type": "workflowEngine",
-          "smt": "smt",
-        }
-      });
-      expect(object.value()).toEqual({
+    object.addToKey('configuration', {
+      props: {
+        'adad': 'adada'
+      }
+    }, {
+      matchProperties: {
         "type": "workflowEngine",
         "smt": "smt",
-        "configuration": {
-          "props": {'adad': 'adada'},
-          "dasmdasmda": "lkasdlkas"
-        }
-      })
+      }
+    });
+    expect(object.value()).toEqual({
+      "type": "workflowEngine",
+      "smt": "smt",
+      "configuration": {
+        "props": {
+          'adad': 'adada'
+        },
+        "dasmdasmda": "lkasdlkas"
+      }
+    })
   });
 
   it('doesn\'t modify the object is key is not existent', () => {
@@ -583,42 +589,42 @@ describe('create key suite', () => {
 
 describe('copy keys suite', () => {
   it('does not modify the object if the destination path is not correct', () => {
-    const object = {
+    const object = new Mutate({
       a: 'smt'
-    }
+    });
 
     object.copyFromKey('d.g', 'b');
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: 'smt'
     })
   });
 
   it('copies simple key', () => {
-    const object = {
+    const object = new Mutate({
       a: 'smt'
-    }
+    });
 
     object.copyFromKey('a', 'b');
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: 'smt',
       b: 'smt'
     })
   });
 
   it('copies from complex path', () => {
-    const object = {
+    const object = new Mutate({
       a: {
         b: {
           d: 'smt'
         }
       }
-    }
+    });
 
     object.copyFromKey('a.b.d', 'a.c');
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: {
         b: {
           d: 'smt'
@@ -629,7 +635,7 @@ describe('copy keys suite', () => {
   });
 
   it('copies from found object with matched properties', () => {
-    const object = {
+    const object = new Mutate({
       a: {
         ref: {
           b: 'c',
@@ -638,7 +644,7 @@ describe('copy keys suite', () => {
           }
         }
       }
-    }
+    });
 
     object.copyFromKey('d', 'x', {
       matchProperties: {
@@ -646,7 +652,7 @@ describe('copy keys suite', () => {
       }
     });
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: {
         ref: {
           b: 'c',
