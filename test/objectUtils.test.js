@@ -198,6 +198,35 @@ describe('find root objectS by properties suite', () => {
 });
 
 describe('addToKey suite', () => {
+  it('adds and creates key', () => {
+    const object = new Mutate({
+      "components": [{
+        "type": "COMPONENT1",
+        "config": {
+          "property1": 1
+        }
+      }]
+    });
+
+    const matchProperties = {
+      "type": "COMPONENT1"
+    }
+
+    object.addToKey('config.x', 'value', {
+      matchProperties
+    });
+
+    expect(object.value()).toEqual({
+      "components": [{
+        "type": "COMPONENT1",
+        "config": {
+          "property1": 1,
+          "x": 'value'
+        }
+      }]
+    })
+  });
+
   it('adds the key correctly', () => {
     const object = new Mutate({
       "type": "workflowEngine",

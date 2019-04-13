@@ -1,6 +1,6 @@
 {
   "name": "object-mutate",
-  "version": "0.2.5",
+  "version": "1.0.1",
   "description": "helper functions to modify javascript objects",
   "main": "objectUtils.js",
   "scripts": {

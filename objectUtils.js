@@ -93,7 +93,10 @@ Mutate.prototype.addToKey = function(destinationPath, object, findSettings = {})
     let name;
     if (indexOfName > -1) {
       name = destinationPath.substring(indexOfName + 1, destinationPath.length);
-      destinationObj[name] = object;
+      const finalPath = destinationPath.substring(0, indexOfName);
+      const obj = getObj(finalPath, destinationObj);
+      obj[name] = object;
+      return;
     } else {
       name = destinationPath;
     }
