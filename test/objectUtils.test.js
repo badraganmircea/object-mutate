@@ -664,6 +664,46 @@ describe('copy keys suite', () => {
           }
         }
       }
+    });
+  });
+
+  it('copies from key from complex paths', () => {
+    const object = new Mutate({
+      a: {
+        ref: {
+          b: 'c',
+          d: {
+            h: 'f'
+          },
+          g: {
+            i: {
+
+            }
+          }
+        }
+      }
+    });
+
+    object.copyFromKey('d.h', 'g.i.x', {
+      matchProperties: {
+        b: 'c'
+      }
+    });
+
+    expect(object.value()).toEqual({
+      a: {
+        ref: {
+          b: 'c',
+          d: {
+            h: 'f'
+          },
+          g: {
+            i: {
+              x: 'f'
+            }
+          }
+        }
+      }
     })
   });
 
