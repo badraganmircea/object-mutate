@@ -121,6 +121,7 @@ Mutate.prototype.addToKey = function(destinationPath, object, findSettings = {})
 };
 
 Mutate.prototype.createKey = function(destinationPath, value) {
+  // TODO: move in helper function to be reused
   const indexOfName = destinationPath.lastIndexOf('.');
 
   if (indexOfName > -1) {
@@ -151,7 +152,25 @@ Mutate.prototype.copyFromKey = function(sourcePath, destinationPath, findSetting
 
   const referenceObjects = this.findRootObjectByProperties(matchProperties);
   referenceObjects.forEach(refObject => {
-    refObject.copyFromKey(sourcePath, destinationPath);
+    const value = getObj(sourcePath, refObject);
+    const indexOfName = destinationPath.lastIndexOf('.');
+
+    if (indexOfName > -1) {
+      const name = destinationPath.substring(indexOfName + 1, destinationPath.length);
+      const path = destinationPath.substring(0, indexOfName);
+
+      const obj = getObj(path, refObject);
+
+      if (!obj) return;
+
+      obj[name] = value;
+
+      return;
+    }
+
+    if (typeof value === 'undefined') return;
+
+    refObject[destinationPath] = value;
   });
 };
 

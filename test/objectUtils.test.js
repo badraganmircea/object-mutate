@@ -668,7 +668,7 @@ describe('copy keys suite', () => {
   });
 
   it('copies from all found objects including those in arrays', () => {
-    const object = {
+    const object = new Mutate({
       a: {
         ref: {
           b: 'c',
@@ -686,7 +686,7 @@ describe('copy keys suite', () => {
           }
         ]
       }
-    }
+    });
 
     object.copyFromKey('d', 'o', {
       matchProperties: {
@@ -695,7 +695,7 @@ describe('copy keys suite', () => {
       }
     })
 
-    expect(object).toEqual({
+    expect(object.value()).toEqual({
       a: {
         ref: {
           b: 'c',
